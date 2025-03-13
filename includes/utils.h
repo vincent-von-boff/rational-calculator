@@ -6,6 +6,7 @@ int is_digit(char);
 int is_valid_number(Rat);
 int convert_to_int(char*);
 char convert_to_char(int);
+
 Int int_sum(Int,Int);
 Int int_product(Int,Int);
 Dec_int dec_int_sum(Dec_int,Dec_int);
