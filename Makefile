@@ -22,7 +22,7 @@ build-test: $(TEST_BIN)
 	
 run-test: $(TEST_BIN)
 	echo "\n\n"
-	./$(TEST_FOLDER)/$^
+	./$(TEST_FOLDER)$^
 
 $(FINAL_BIN): $(OBJECTS) $(MAIN_OBJ)
 	$(CC) $(foreach X, $^, $(BUILD_FOLDER)$(X)) -o $(BUILD_FOLDER)$@

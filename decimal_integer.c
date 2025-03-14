@@ -1,86 +1,88 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "includes/utils.h"
 
-Dec_int create_dec_int(char* digits){
+Dec_int* create_dec_int(char* digits){
     int size_dig = strlen(digits);
-    Dec_int result;
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
     char* result_digits = (char*) malloc(size_dig * sizeof(char));
     for(int i=0; i< size_dig; i++){
         result_digits[size_dig - 1 - i] = digits[i];
     }
-    result.digits = result_digits;
-    result.size = size_dig;
+    result->digits = result_digits;
+    result->size = size_dig;
 
     return result;
 }
 
-Dec_int sum_dec_int(Dec_int x, Dec_int y){
+Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
 
-    Dec_int result;
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
 
-    int carry = 0;
+    char carry = 0;
     int size_int = size_of_int();
 
     // Finds largest of the arguments
-    long unsigned int max;
-    if (x.size >= y.size){
-        max = x.size;
+    Dec_int* max;
+    Dec_int* min;
+    if (x->size >= y->size){
+        max = x;
+        min = y;
     }
     else{
-        max = y.size;
+        max = y;
+        min = x;
     }
 
-    int* buffer =
-        (int*) calloc(3*(max+1), size_int);
-    for(int i=0; i<x.size; i++){
-        int temp;
-        temp = x.digits[i] - '0';
-        buffer[i] = temp;
-    }
-    for(int i=0; i<y.size; i++){
-        int temp;
-        temp = y.digits[i] - '0';
-        buffer[(max+1) + i] = temp;
-    }
-    /* for (int j=0; j<3*max;j++){ */
-    /*     printf("Debug calloc: %d, %x\n", j, buffer[j]); */
-    /* } */
+    char* buffer = (char*) calloc(max->size+1, sizeof(char));
 
     // Main calculation
-    for (int i=0; i < max+1; i++){
-        int total =
-            buffer[i] + buffer[(max+1) + i] + carry;
-        /* printf("Debug total: i=%d, total=%x\n", i, total); */
-        buffer[2*(max+1) + i] = total % 10;
-        carry = total/10;
-        /* printf("Debug carry: i=%d, carry=%x\n", i, carry); */
+    char total = 0;
+    /* printf("x: %x, y: %x, carry: %x, total: %x\n", x->digits[0], y->digits[0], carry, total); */
+    for (int i=0; i < max->size+1; i++){
+        if (i<min->size){
+            total =
+                (x->digits[i] - '0') + (y->digits[i] - '0') + carry;
+            buffer[i] = total % 10 + '0';
+            carry = total/10;
+        /* printf("x: %x, y: %x, carry: %x, total: %x\n", x->digits[i], y->digits[i], carry, total); */
+        }
+        else if(i<max->size){
+            total =
+                (max->digits[i]-'0') + carry;
+            buffer[i] = total % 10 + '0';
+            carry = total/10;
+        /* printf("x: %x, carry: %x, total: %x\n", max->digits[i], carry, total); */
+        }
+        else{
+            buffer[max->size] = carry + '0';
+        }
     }
 
-    char* result_digits = (char*) calloc(max+1,1);
-    
-    for(int i=0; i<max+1; i++){
-        char temp = buffer[2*(max+1) + i] + '0';
-        result_digits[i] = temp;
+    if(buffer[max->size]=='0'){
+        result->size = max->size;
+        char* result_digits = (char*) calloc(max->size, sizeof(char));
+        for(int i=0; i<max->size; i++){
+            result_digits[i] = buffer[i];
+        }
+        result->digits = result_digits;
+        free(buffer);
     }
-
-    result.digits = result_digits;
-    result.size = max;
-    if(result.digits[max]!='0'){
-        result.size++;
+    else{
+        result->size = max->size + 1;
+        result->digits = buffer;
     }
-
-    free(buffer);
 
     return result;
 }
 
 
-char* dec_to_str(Dec_int numb){
-    char* str_buffer = malloc( (numb.size+1) * sizeof(char) );
-    str_buffer[numb.size] = '\0';
-    for(int i=0; i<numb.size; i++){
-        str_buffer[i] = numb.digits[numb.size - 1 - i];
+char* dec_to_str(Dec_int* numb){
+    char* str_buffer = (char*) malloc( ((numb->size)+1) * sizeof(char) );
+    str_buffer[numb->size] = '\0';
+    for(int i=0; i<numb->size; i++){
+        str_buffer[i] = numb->digits[numb->size - 1 - i];
     }
     
     return str_buffer;
@@ -99,6 +101,6 @@ char* dec_to_str(Dec_int numb){
 /*     printf("\n"); */
 /* } */
 
-void free_dec_int(Dec_int numb){
-    free(numb.digits);
+void free_dec_int(Dec_int* numb){
+    free(numb->digits);
 }
