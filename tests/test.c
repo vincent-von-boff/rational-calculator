@@ -52,6 +52,25 @@ int main(int argc, char** argv){
     printf("%s", dec_to_str(fib2));
 
     printf("\n");
+    printf("\n");
+
+    // Test comparison
+    Dec_int* cmp_1 = create_dec_int("82436234769872438");
+    Dec_int* cmp_2 = create_dec_int("82436234769872437");
+
+    char* is_gt = is_gt_dec(cmp_1, cmp_2) ? "Yes" : "No";
+    char* is_lt = is_lt_dec(cmp_1, cmp_2) ? "Yes" : "No";
+    char* is_eq = is_equals_dec(cmp_1, cmp_2) ? "Yes" : "No";
+
+    printf("%s > %s ? %s\n", dec_to_str(cmp_1),
+                             dec_to_str(cmp_2),
+                             is_gt);
+    printf("%s < %s ? %s\n", dec_to_str(cmp_1),
+                             dec_to_str(cmp_2),
+                             is_lt);
+    printf("%s = %s ? %s\n", dec_to_str(cmp_1),
+                             dec_to_str(cmp_2),
+                             is_eq);
 
 
 

@@ -15,6 +15,14 @@ Dec_int* sum_dec_int(Dec_int*, Dec_int*);
 
 Dec_int* sub_dec_int(Dec_int*, Dec_int*);
 
+int compare_dec(Dec_int*, Dec_int*);
+
+int is_gt_dec(Dec_int*, Dec_int*);
+
+int is_lt_dec(Dec_int*, Dec_int*);
+
+int is_equals_dec(Dec_int*, Dec_int*);
+
 Dec_int* prod_dec_int(Dec_int*, Dec_int*);
 
 Dec_int* div_dec_int(Dec_int*, Dec_int*);
