@@ -181,20 +181,30 @@ int compare_dec(Dec_int* x, Dec_int* y){
             1 if x>y,
             2 if equals
     ********************/
+    
+    // if different signs, return early
+    if (x->sign != y->sign){
+        return x->sign > y->sign;
+    }
  
-    // if x has more digits, return early
+    // if one of them has more digits, return early
     if (x->size != y->size){
         return x->size > y->size;
     }
 
     // else compare digit by digit
     unsigned long int size = x->size;
+    int sign = x->sign;
     for(int i=size-1; i>=0; i--){
         char x_dig = x->digits[i];
         char y_dig = y->digits[i];
-        if(x_dig != y_dig){
+        if(x_dig != y_dig && sign == 1){
             return x_dig > y_dig;
         }
+        if(x_dig != y_dig && sign == -1){
+            return x_dig < y_dig;
+        }
+        
     }
     return 2;
 }

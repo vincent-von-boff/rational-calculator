@@ -66,9 +66,9 @@ int main(int argc, char** argv){
 
     // Test comparison
     Dec_int cmp_1;
-    create_dec_int(&cmp_1, "82436234769872438");
+    create_dec_int(&cmp_1, "-82436234769872437");
     Dec_int cmp_2;
-    create_dec_int(&cmp_2, "82436234769872437");
+    create_dec_int(&cmp_2, "-82436234769872438");
 
     char* is_gt = is_gt_dec(&cmp_1, &cmp_2) ? "Yes" : "No";
     char* is_lt = is_lt_dec(&cmp_1, &cmp_2) ? "Yes" : "No";
