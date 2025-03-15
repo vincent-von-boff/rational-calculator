@@ -9,7 +9,7 @@ typedef struct Dec_int{
     int sign;
 } Dec_int;
 
-Dec_int* create_dec_int(char*);
+int create_dec_int(Dec_int*, char*);
 
 Dec_int* sum_dec_int(Dec_int*, Dec_int*);
 
@@ -30,6 +30,7 @@ Dec_int* div_dec_int(Dec_int*, Dec_int*);
 char* dec_to_str(Dec_int*);
 
 void free_dec_int(Dec_int*);
+void free_dec_dig(Dec_int*);
 
 
 #endif

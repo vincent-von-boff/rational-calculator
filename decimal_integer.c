@@ -1,20 +1,58 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include "includes/structs.h"
 #include "includes/utils.h"
 
-Dec_int* create_dec_int(char* digits){
+int create_dec_int(Dec_int* number, char* digits){
+    /************
+    RETURN:  0 if success,
+             1 if empty string
+             2 if invalid string
+     * *********/
     int size_dig = strlen(digits);
-    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
-    char* result_digits = (char*) malloc(size_dig * sizeof(char));
-    for(int i=0; i< size_dig; i++){
-        result_digits[size_dig - 1 - i] = digits[i];
+    if (size_dig < 1){
+        return 1;
     }
-    result->digits = result_digits;
-    result->size = size_dig;
 
-    return result;
+    int result_size = size_dig;
+    int result_sign = 1;
+    char* buffer = (char*) malloc(size_dig * sizeof(char));
+    int pos = 0; //position in string used for lexing
+
+    if (digits[pos] == '-'){
+        result_sign = -1;    
+        pos++;
+        result_size--;
+    } 
+
+    //bool to track if initial zeroes have been cropped
+    int crop_done = 0;
+
+    for(int i=pos; i< size_dig; i++){
+        char dig = digits[i];
+        if (isdigit(dig)){
+            if (dig == '0' && !crop_done){
+                result_size--;
+                continue;
+            }
+            crop_done = 1;
+            buffer[size_dig - 1 - i] = digits[i];
+        }
+        else
+            return 2;
+    }
+
+    char* result_digits = (char*) malloc(result_size * sizeof(char));
+    for(int i=0; i<result_size; i++){
+        result_digits[i] = buffer[i];
+    }
+    number->digits = result_digits;
+    number->size = result_size;
+    number->sign = result_sign;
+
+    return 0;
 }
 
 Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
@@ -193,30 +231,27 @@ int is_equals_dec(Dec_int* x, Dec_int* y){
 
 
 char* dec_to_str(Dec_int* numb){
-    char* str_buffer = (char*) malloc( ((numb->size)+1) * sizeof(char) );
-    str_buffer[numb->size] = '\0';
-    for(int i=0; i<numb->size; i++){
-        str_buffer[i] = numb->digits[numb->size - 1 - i];
+    char* str_buffer;
+    if (numb->sign == 1){
+        str_buffer = (char*) malloc( ((numb->size)+1) * sizeof(char) );
+        str_buffer[numb->size] = '\0';
+        for(int i=0; i<numb->size; i++){
+            str_buffer[i] = numb->digits[numb->size - 1 - i];
+        }
+    }
+    else{
+        str_buffer = (char*) malloc( ((numb->size)+2) * sizeof(char) );
+        str_buffer[numb->size+1] = '\0';
+        str_buffer[0] = '-';
+        for(int i=0; i<numb->size; i++){
+            str_buffer[i+1] = numb->digits[numb->size - 1 - i];
+        }
     }
     
     return str_buffer;
 }
 
-/* void print_dec(Dec_int x){ */
-/*     for(int i=0; i < x.size; i++){ */
-/*         printf("%c", x.digits[x.size - 1 - i]); */
-/*     } */
-/* } */
-/*  */
-/* void print_dec_ln(Dec_int x){ */
-/*     for(int i=0; i < x.size; i++){ */
-/*         printf("%c", x.digits[x.size - 1 - i]); */
-/*     } */
-/*     printf("\n"); */
-/* } */
-
-void free_dec_int(Dec_int* numb){
+void free_dec_dig(Dec_int* numb){
+    //free digits of Dec_int struct
     free(numb->digits);
-    free(numb);
-    numb = NULL;
 }
