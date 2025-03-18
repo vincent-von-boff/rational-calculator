@@ -60,7 +60,6 @@ Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
 
     char carry = 0;
-    int size_int = size_of_int();
 
     // Finds largest of the arguments
     Dec_int* max;
@@ -97,6 +96,7 @@ Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
     }
 
     if(buffer[max->size]=='0'){
+        result->sign = 1;
         result->size = max->size;
         char* result_digits = (char*) calloc(max->size, sizeof(char));
         for(int i=0; i<max->size; i++){
@@ -106,6 +106,7 @@ Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
         free(buffer);
     }
     else{
+        result->sign = 1;
         result->size = max->size + 1;
         result->digits = buffer;
     }
