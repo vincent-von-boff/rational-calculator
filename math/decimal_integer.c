@@ -149,17 +149,19 @@ Dec_int* sub_dec_int_abs(Dec_int* x, Dec_int* y){
     // Finds largest of the arguments
     Dec_int* max;
     Dec_int* min;
-    if (is_gt_dec(x,y)){
+    Dec_int* x_abs = dec_int_abs(x);
+    Dec_int* y_abs = dec_int_abs(y);
+    if (is_gt_dec(x_abs, y_abs) ){
         max = x;
         min = y;
         sign = 1;
     }
-    else if(is_lt_dec(x,y)){
+    else if(is_lt_dec(x_abs, y_abs)){
         max = y;
         min = x;
         sign = -1;
     }
-    else if (is_equals_dec(x,y)){
+    else if (is_equals_dec(x_abs, y_abs)){
         //if equal, exit early
         result_digits = (char*) malloc(sizeof(char));
         result_digits[0] = '0';
@@ -258,6 +260,16 @@ Dec_int* prod_dec_int(Dec_int* x, Dec_int* y){
     // Product of two positive integers.
     // TO DO
     return NULL;
+}
+
+Dec_int* dec_int_abs(Dec_int* x){
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    char* result_digits = (char*) malloc(x->size * sizeof(char));
+    memcpy(result_digits, x->digits, x->size);
+    result->digits = result_digits;
+    result->size = x->size;
+    result->sign = 1;
+    return result;
 }
 
 int compare_dec(Dec_int* x, Dec_int* y){

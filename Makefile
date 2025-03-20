@@ -1,6 +1,6 @@
 CC = gcc
 INCLUDE_DIR = ./include/
-CFLAGS = -I $(INCLUDE_DIR) 
+CFLAGS = -g -Wall -Werror -I$(INCLUDE_DIR) 
 
 # Math
 MATH_FOLDER = ./math/
@@ -8,9 +8,9 @@ MATH_OBJ = decimal_integer.o
 MATH_FILES =  decimal_integer.c
 RAW_MATH_OBJ =  decimal_integer
 
-OBJECTS = utils.o 
-FILES = utils.c 
-RAW_OBJECTS = utils
+OBJECTS = #utils.o 
+FILES = #utils.c 
+RAW_OBJECTS = #utils
 
 # Main
 MAIN_FILE = main.c
@@ -40,10 +40,10 @@ run-test: $(TEST_BIN)
 	echo "\n";$(TEST_BUILD_FOLDER)$^;
 
 $(FINAL_BIN): $(OBJECTS) $(MAIN_OBJ) $(MATH_OBJ)
-	$(CC) $(BUILD_FOLDER)$(MAIN_OBJ) $(foreach X, $(MATH_OBJ), $(BUILD_FOLDER)$(X)) $(foreach X, $(OBJECTS), $(BUILD_FOLDER)$(X)) -o $(BUILD_FOLDER)$@
+	$(CC) -g $(BUILD_FOLDER)$(MAIN_OBJ) $(foreach X, $(MATH_OBJ), $(BUILD_FOLDER)$(X)) $(foreach X, $(OBJECTS), $(BUILD_FOLDER)$(X)) -o $(BUILD_FOLDER)$@
 
 $(TEST_BIN): $(OBJECTS) $(MAIN_TEST_OBJ) $(TEST_OBJECTS) $(MATH_OBJ)
-	$(CC) $(TEST_BUILD_FOLDER)$(MAIN_TEST_OBJ) $(foreach X, $(MATH_OBJ), $(BUILD_FOLDER)$(X)) $(foreach X, $(TEST_OBJECTS), $(TEST_BUILD_FOLDER)$(X)) $(foreach X, $(OBJECTS), $(BUILD_FOLDER)$(X)) -o $(TEST_BUILD_FOLDER)$@
+	$(CC) -g  $(TEST_BUILD_FOLDER)$(MAIN_TEST_OBJ) $(foreach X, $(MATH_OBJ), $(BUILD_FOLDER)$(X)) $(foreach X, $(TEST_OBJECTS), $(TEST_BUILD_FOLDER)$(X)) $(foreach X, $(OBJECTS), $(BUILD_FOLDER)$(X)) -o $(TEST_BUILD_FOLDER)$@
 
 $(MAIN_OBJ): 
 	$(CC) $(CFLAGS) -c $(MAIN_FILE) -o $(BUILD_FOLDER)$@

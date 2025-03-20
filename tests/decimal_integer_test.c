@@ -68,6 +68,8 @@ TEST(test_order){
     ASSERT(is_eq != true);
     ASSERT(is_gt != true);
     ASSERT(is_lt == true);
+
+    return 0;
     }
 
 TEST(test_sum_dec_int_abs){
@@ -78,6 +80,15 @@ TEST(test_sum_dec_int_abs){
     char* arg2;
     char* expect;
 
+    arg1 = "3";
+    arg2 = "2";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sum_dec_int_abs(&x,&y);
+    expect = "5";
+    printf("|--Testing %s + %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
     arg1 = "87147587";
     arg2 = "98789340";
     create_dec_int(&x, arg1);
@@ -86,6 +97,102 @@ TEST(test_sum_dec_int_abs){
     expect = "185936927";
     printf("|--Testing %s + %s:\n", arg1, arg2);
     ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    return 0;
+    }
+
+TEST(test_sum_dec_int){
+    Dec_int x;
+    Dec_int y;
+    Dec_int* result;
+    char* arg1;
+    char* arg2;
+    char* expect;
+
+    arg1 = "-87147587";
+    arg2 = "-98789340";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sum_dec_int(&x,&y);
+    expect = "-185936927";
+    printf("|--Testing (%s) + (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "-98789340";
+    arg2 = "98789342";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sum_dec_int(&x,&y);
+    expect = "2";
+    printf("|--Testing (%s) + (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "98789340";
+    arg2 = "-98789340";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sum_dec_int(&x,&y);
+    expect = "0";
+    printf("|--Testing (%s) + (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "98";
+    arg2 = "98";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sum_dec_int(&x,&y);
+    expect = "196";
+    printf("|--Testing (%s) + (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    return 0;
+    }
+
+TEST(test_sub_dec_int){
+    Dec_int x;
+    Dec_int y;
+    Dec_int* result;
+    char* arg1;
+    char* arg2;
+    char* expect;
+
+    arg1 = "9999";
+    arg2 = "9999";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sub_dec_int(&x,&y);
+    expect = "0";
+    printf("|--Testing (%s) - (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "-98789340";
+    arg2 = "-98789342";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sub_dec_int(&x,&y);
+    expect = "2";
+    printf("|--Testing (%s) - (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "9003";
+    arg2 = "-9003";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sub_dec_int(&x,&y);
+    expect = "18006";
+    printf("|--Testing (%s) - (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    arg1 = "-17";
+    arg2 = "40";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = sub_dec_int(&x,&y);
+    expect = "-57";
+    printf("|--Testing (%s) - (%s):\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    return 0;
     }
 
 TEST(test_sub_dec_int_abs){
@@ -125,6 +232,7 @@ TEST(test_sub_dec_int_abs){
     printf("|--Testing %s - %s:\n", arg1, arg2);
     ASSERT_STR_EQ(dec_to_str(result), expect);
     /* puts("|\n"); */
+    return 0;
 }
 
 TEST(fib_test){
@@ -139,12 +247,16 @@ TEST(fib_test){
     result = fib(1000);
     puts("|--Testing fib(1000)");
     ASSERT_STR_EQ(dec_to_str(result), expect);
+
+    return 0;
 }
 
 int test_dec_int(int argc, char** argv){
 
     RUN_TEST(test_order);
     RUN_TEST(test_sum_dec_int_abs);
+    RUN_TEST(test_sum_dec_int);
+    RUN_TEST(test_sub_dec_int);
     RUN_TEST(test_sub_dec_int_abs);
     RUN_TEST(fib_test);
 

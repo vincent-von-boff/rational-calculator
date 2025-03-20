@@ -19,6 +19,8 @@ Dec_int* sub_dec_int(Dec_int*, Dec_int*);
 
 Dec_int* sub_dec_int_abs(Dec_int*, Dec_int*);
 
+Dec_int* dec_int_abs(Dec_int*);
+
 int compare_dec(Dec_int*, Dec_int*);
 
 int is_gt_dec(Dec_int*, Dec_int*);
