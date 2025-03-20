@@ -124,7 +124,7 @@ TEST(test_sub_dec_int_abs){
     expect = "0";
     printf("|--Testing %s - %s:\n", arg1, arg2);
     ASSERT_STR_EQ(dec_to_str(result), expect);
-    puts("|\n");
+    /* puts("|\n"); */
 }
 
 TEST(fib_test){
