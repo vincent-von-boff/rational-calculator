@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "includes/structs.h"
-#include "includes/utils.h"
+#include "../include/decimal_integer.h"
 
 int create_dec_int(Dec_int* number, char* digits){
     /************
@@ -11,6 +10,7 @@ int create_dec_int(Dec_int* number, char* digits){
              1 if empty string
              2 if invalid string
      * *********/
+
     int size_dig = strlen(digits);
     if (size_dig < 1){
         return 1;
@@ -55,7 +55,8 @@ int create_dec_int(Dec_int* number, char* digits){
     return 0;
 }
 
-Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
+Dec_int* sum_dec_int_abs(Dec_int* x, Dec_int* y){
+    /* Evaluate the sum of the absolute value of two integers */
 
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
 
@@ -115,65 +116,92 @@ Dec_int* sum_dec_int(Dec_int* x, Dec_int* y){
 }
 
 // IN PROGRESS
-/* Dec_int* sub_dec_int(Dec_int* x, Dec_int* y){ */
-/*  */
-/*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
-/*  */
-/*     char carry = 0; */
-/*     int size_int = size_of_int(); */
-/*  */
-/*     // Finds largest of the arguments */
-/*     Dec_int* max; */
-/*     Dec_int* min; */
-/*     if (x->size >= y->size){ */
-/*         max = x; */
-/*         min = y; */
-/*     } */
-/*     else{ */
-/*         max = y; */
-/*         min = x; */
-/*     } */
-/*  */
-/*     char* buffer_x = (char*) calloc(max->size+1, sizeof(char)); */
-/*     char* buffer_y = (char*) calloc(max->size+1, sizeof(char)); */
-/*     char* buffer_res = (char*) calloc(max->size+1, sizeof(char)); */
-/*  */
-/*     // Main calculation */
-/*     char total = 0; */
-/*     for (int i=0; i < max->size+1; i++){ */
-/*         if (i<min->size){ */
-/*             total = */
-/*                 (x->digits[i] - '0') + (y->digits[i] - '0') + carry; */
-/*             buffer[i] = total % 10 + '0'; */
-/*             carry = total/10; */
-/*         } */
-/*         else if(i<max->size){ */
-/*             total = */
-/*                 (max->digits[i]-'0') + carry; */
-/*             buffer[i] = total % 10 + '0'; */
-/*             carry = total/10; */
-/*         } */
-/*         else{ */
-/*             buffer[max->size] = carry + '0'; */
-/*         } */
-/*     } */
-/*  */
-/*     if(buffer[max->size]=='0'){ */
-/*         result->size = max->size; */
-/*         char* result_digits = (char*) calloc(max->size, sizeof(char)); */
-/*         for(int i=0; i<max->size; i++){ */
-/*             result_digits[i] = buffer[i]; */
-/*         } */
-/*         result->digits = result_digits; */
-/*         free(buffer); */
-/*     } */
-/*     else{ */
-/*         result->size = max->size + 1; */
-/*         result->digits = buffer; */
-/*     } */
-/*  */
-/*     return result; */
-/* } */
+Dec_int* sub_dec_int_abs(Dec_int* x, Dec_int* y){
+    // Subtracts two positive integers.
+
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    char* result_digits;
+
+    int sign = -1;
+    
+    // Finds largest of the arguments
+    Dec_int* max;
+    Dec_int* min;
+    if (is_gt_dec(x,y)){
+        max = x;
+        min = y;
+        sign = 1;
+    }
+    else if(is_lt_dec(x,y)){
+        max = y;
+        min = x;
+        sign = -1;
+    }
+    else if (is_equals_dec(x,y)){
+        //if equal, exit early
+        result_digits = (char*) malloc(sizeof(char));
+        result_digits[0] = '0';
+        result->digits = result_digits;
+        result->size=1;
+        result->sign=1;
+        return result;
+    }
+    else{
+        return NULL;
+    }
+
+    char* buffer = (char*) calloc(max->size, sizeof(char));
+
+    // Main calculation
+    char total = 0;
+    char debt = 0;
+
+    //Count zeros dangling on the left:
+    //starts at 0; get incremented every time the total is zero
+    //gets reset every time it encounters a non-zero total
+    long unsigned int count = 0;
+
+    for (long unsigned int i=0; i < max->size; i++){
+        char max_dig = max->digits[i] - '0';
+        char min_dig = min->digits[i] - '0';
+
+        // Check if there was a previous borrow
+        if(debt==1 && max_dig==0){
+            max_dig += 9;
+        }
+        if(debt==1 && max_dig!=0){
+            max_dig -= 1;
+            debt = 0;
+        }
+
+        // Main calculation
+        if(max_dig>=min_dig){
+            total = max_dig - min_dig;
+            buffer[i] = total + '0';
+        }
+        else{
+            char ten = 10;
+            total = ten + max_dig - min_dig;
+            buffer[i] = total + '0';
+            debt = 1;
+            }
+        count = (total == 0) ? count + 1 : 0;
+    }
+
+    
+    //Allocation
+    long unsigned int result_size = max->size - count;
+    result_digits = (char*) calloc(result_size, sizeof(char));
+    for(long unsigned int i=0; i<result_size; i++){
+        result_digits[i] = buffer[i];
+    }
+    result->digits = result_digits;
+    result->size = result_size;
+    result->sign = sign;
+    free(buffer);
+
+    return result;
+}
 
 
 int compare_dec(Dec_int* x, Dec_int* y){
@@ -187,15 +215,16 @@ int compare_dec(Dec_int* x, Dec_int* y){
     if (x->sign != y->sign){
         return x->sign > y->sign;
     }
+    int sign = x->sign;
  
     // if one of them has more digits, return early
     if (x->size != y->size){
-        return x->size > y->size;
+        if(sign==1)  return x->size > y->size;
+        if(sign==-1) return x->size < y->size;
     }
+    unsigned long int size = x->size;
 
     // else compare digit by digit
-    unsigned long int size = x->size;
-    int sign = x->sign;
     for(int i=size-1; i>=0; i--){
         char x_dig = x->digits[i];
         char y_dig = y->digits[i];
