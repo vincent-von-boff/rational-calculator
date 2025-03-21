@@ -313,14 +313,54 @@ Dec_int* mul_dig_by_dec_int(char x, Dec_int* y){
     return result;
 }
 
-/* Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){ */
-/*     // Product of two positive integers. */
-/*      */
-/*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
-/*  */
-/*  */
-/*     return NULL; */
-/* } */
+Dec_int* left_shift(Dec_int* x, long unsigned int shift_size){
+    // Multiply by 10 (left shift)
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    if(shift_size==0){
+        char* result_digits = (char*) malloc(x->size * sizeof(char));
+        memcpy(result_digits, x->digits, x->size);
+        result->digits = result_digits;
+        result->size = x->size;
+        result->sign = x->sign;
+        return result;
+    }
+    char* result_digits = (char*) calloc(x->size+shift_size, sizeof(char));
+    memcpy(result_digits + shift_size*sizeof(char), x->digits, x->size);
+    result->digits = result_digits;
+    result->size = x->size + shift_size;
+    result->sign = x->sign;
+    
+    return result;
+}
+
+Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){
+    // Product of two positive integers.
+    
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    char* buffer = (char*) malloc((x->size+y->size) * sizeof(char));
+    char cache[10];
+
+    //Finds largest in number of digits
+    Dec_int* max;
+    Dec_int* min;
+    if (x->size >= y->size){
+        max = x;
+        min = y;
+    }
+    else{
+        max = y;
+        min = x;
+    }
+
+    unsigned int shift_count = 0;
+    for(unsigned int i=0; i<min->size; i++){
+
+    }
+    
+
+
+    return NULL;
+}
 
 Dec_int* dec_int_abs(Dec_int* x){
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
