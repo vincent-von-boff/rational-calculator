@@ -554,6 +554,109 @@ TEST(fib_test){
     return 0;
 }
 
+TEST(test_mul_dec_int){
+    Dec_int x;
+    Dec_int y;
+    Dec_int* result;
+    char* arg1;
+    char* arg2;
+    char* expect;
+
+    arg1 = "2";
+    arg2 = "1";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = mul_dec_int(&x,&y);
+    expect = "2";
+    printf("|--Testing %s * %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg1 = "-23";
+    arg2 = "5";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = mul_dec_int(&x,&y);
+    expect = "-115";
+    printf("|--Testing %s * %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg1 = "17";
+    arg2 = "-7";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = mul_dec_int(&x,&y);
+    expect = "-119";
+    printf("|--Testing %s * %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+    
+    arg1 = "7";
+    arg2 = "-17";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = mul_dec_int(&x,&y);
+    expect = "-119";
+    printf("|--Testing %s * %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg2 = "-1323";
+    arg1 = "-1569";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = mul_dec_int(&x,&y);
+    expect = "2075787";
+    printf("|--Testing %s * %s:\n", arg1, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg1 = "1";
+    arg2 = "-10";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = &x;
+    int N = 31;
+    for(int i=0; i<N; i++){
+        result = mul_dec_int(result, &y);
+    }
+    expect = "-10000000000000000000000000000000";
+    printf("|--Testing %s^%d:\n", arg2, N);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg1 = "1";
+    arg2 = "2";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = &x;
+    N = 100;
+    for(int i=0; i<N; i++){
+        result = mul_dec_int(result, &y);
+    }
+    expect = "1267650600228229401496703205376";
+    printf("|--Testing %s^%d:\n", arg2, N);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    arg1 = "1";
+    arg2 = "2";
+    create_dec_int(&x, arg1);
+    create_dec_int(&y, arg2);
+    result = &x;
+    N = 1000;
+    for(int i=0; i<N; i++){
+        result = mul_dec_int(result, &y);
+    }
+    expect = "10715086071862673209484250490600018105614048117055336074437503883703510511249361224931983788156958581275946729175531468251871452856923140435984577574698574803934567774824230985421074605062371141877954182153046474983581941267398767559165543946077062914571196477686542167660429831652624386837205668069376";
+    printf("|--Testing %s^%d:\n", arg2, N);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    return 0;
+}
+
 int test_dec_int(int argc, char** argv){
 
     /* RUN_TEST(test_create_dec_int); */
@@ -564,7 +667,8 @@ int test_dec_int(int argc, char** argv){
     /* RUN_TEST(test_sub_dec_int_abs); */
     /* RUN_TEST(test_mul_dig_by_dec_int); */
     /* RUN_TEST(test_left_shift); */
-    RUN_TEST(test_right_shift);
+    /* RUN_TEST(test_right_shift); */
+    RUN_TEST(test_mul_dec_int);
     /* RUN_TEST(fib_test); */
 
 
