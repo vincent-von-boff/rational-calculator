@@ -29,7 +29,9 @@ int is_lt_dec(Dec_int*, Dec_int*);
 
 int is_equals_dec(Dec_int*, Dec_int*);
 
-Dec_int* prod_dec_int(Dec_int*, Dec_int*);
+Dec_int* mul_dig_by_dec_int(char, Dec_int*);
+
+Dec_int* mul_dec_int(Dec_int*, Dec_int*);
 
 Dec_int* div_dec_int(Dec_int*, Dec_int*);
 

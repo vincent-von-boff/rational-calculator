@@ -235,6 +235,64 @@ TEST(test_sub_dec_int_abs){
     return 0;
 }
 
+TEST(test_mul_dig_by_dec_int){
+    Dec_int y;
+    Dec_int* result;
+    char scalar;
+    char arg2[1000];
+    char expect[1000];
+
+    scalar = '0';
+    strcpy(arg2, "98789340");
+    create_dec_int(&y, arg2);
+    result = mul_dig_by_dec_int(scalar,&y);
+    strcpy(expect, "0");
+    printf("|--Testing %c * %s:\n", scalar, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = '1';
+    strcpy(arg2, "111110002");
+    create_dec_int(&y, arg2);
+    result = mul_dig_by_dec_int(scalar,&y);
+    strcpy(expect, "111110002");
+    printf("|--Testing %c * %s:\n", scalar, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = '9';
+    strcpy(arg2, "999999999");
+    create_dec_int(&y, arg2);
+    result = mul_dig_by_dec_int(scalar,&y);
+    strcpy(expect, "8999999991");
+    printf("|--Testing %c * %s:\n", scalar, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = '5';
+    strcpy(arg2, "-11");
+    create_dec_int(&y, arg2);
+    result = mul_dig_by_dec_int(scalar,&y);
+    strcpy(expect, "-55");
+    printf("|--Testing %c * %s:\n", scalar, arg2);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = '2';
+    strcpy(arg2, "1");
+    create_dec_int(&y, arg2);
+    result = &y;
+    for(int i=0;i<10;i++){
+        result = mul_dig_by_dec_int(scalar, result);
+    }
+    strcpy(expect, "1024");
+    printf("|--Testing %c^10:\n", scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    return 0;
+}
+
 TEST(fib_test){
     // fib(100)
     char* expect = "354224848179261915075";
@@ -258,6 +316,7 @@ int test_dec_int(int argc, char** argv){
     RUN_TEST(test_sum_dec_int);
     RUN_TEST(test_sub_dec_int);
     RUN_TEST(test_sub_dec_int_abs);
+    RUN_TEST(test_mul_dig_by_dec_int);
     RUN_TEST(fib_test);
 
 

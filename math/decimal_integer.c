@@ -256,11 +256,64 @@ Dec_int* sub_dec_int(Dec_int* x, Dec_int* y){
 }
 
 
-Dec_int* prod_dec_int(Dec_int* x, Dec_int* y){
-    // Product of two positive integers.
-    // TO DO
-    return NULL;
+Dec_int* mul_dig_by_dec_int(char x, Dec_int* y){
+    // Product of single decimal digit by integers.
+
+    if(!isdigit(x))
+        return NULL;
+
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+
+    if(x=='0'){
+        char* zero_char = (char*) malloc(sizeof(char));
+        zero_char[0] = '0';
+        result->digits = zero_char;
+        result->size = 1;
+        result->sign = 1;
+        return result;
+    }
+
+    char* result_digits = (char*) malloc(y->size * sizeof(char));
+
+    //Main calculation
+    unsigned int scalar = x-'0';
+    unsigned int carry = 0;
+    unsigned int total = 0;
+    for(long unsigned int i=0; i<y->size; i++){
+        unsigned int temp = y->digits[i] - '0';
+        total = scalar * temp + carry;
+        result_digits[i] = (char)((total % 10) + '0');
+        carry = total / 10;
+    }
+
+    if(carry!=0){
+        char* result_digits_with_carry = (char*) malloc((y->size+1) * sizeof(char));
+        memcpy(result_digits_with_carry, result_digits, y->size);
+        result_digits_with_carry[y->size] = (char)(carry + '0');
+
+        result->digits = result_digits_with_carry;
+        result->size = y->size+1;
+        result->sign = y->sign;
+
+        return result;
+    }
+    
+    result->digits = result_digits;
+    result->size = y->size;
+    result->sign = y->sign;
+
+    return result;
 }
+
+/* Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){ */
+/*     // Product of two positive integers. */
+/*     // TO DO */
+/*      */
+/*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
+/*  */
+/*  */
+/*     return NULL; */
+/* } */
 
 Dec_int* dec_int_abs(Dec_int* x){
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
