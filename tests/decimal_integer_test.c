@@ -400,6 +400,15 @@ TEST(test_left_shift){
     char expect[1000];
 
     scalar = 1;
+    strcpy(arg2, "3");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "30");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+    
+    scalar = 1;
     strcpy(arg2, "9878934");
     create_dec_int(&y, arg2);
     result = left_shift_dec_int(&y, scalar);
@@ -426,6 +435,15 @@ TEST(test_left_shift){
     ASSERT_STR_EQ(dec_to_str(result), expect);
     puts("|\n");
 
+    scalar = 5;
+    strcpy(arg2, "-999999999");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "-99999999900000");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
     scalar = 17;
     strcpy(arg2, "2134");
     create_dec_int(&y, arg2);
@@ -441,6 +459,79 @@ TEST(test_left_shift){
     result = left_shift_dec_int(&y, scalar);
     strcpy(expect, "0");
     printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    return 0;
+}
+
+TEST(test_right_shift){
+    Dec_int y;
+    Dec_int* result;
+    long unsigned int scalar;
+    char arg2[1000];
+    char expect[1000];
+
+    scalar = 1;
+    strcpy(arg2, "3");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "0");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+    
+    scalar = 1;
+    strcpy(arg2, "9878934");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "987893");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 0;
+    strcpy(arg2, "111110002");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "111110002");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 5;
+    strcpy(arg2, "999999999");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "9999");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 5;
+    strcpy(arg2, "-999999999");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "-9999");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 17;
+    strcpy(arg2, "2134");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "0");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 3;
+    strcpy(arg2, "0");
+    create_dec_int(&y, arg2);
+    result = right_shift_dec_int(&y, scalar);
+    strcpy(expect, "0");
+    printf("|--Testing %s >> %ld :\n", arg2, scalar);
     ASSERT_STR_EQ(dec_to_str(result), expect);
     puts("|\n");
 
@@ -472,7 +563,8 @@ int test_dec_int(int argc, char** argv){
     /* RUN_TEST(test_sub_dec_int); */
     /* RUN_TEST(test_sub_dec_int_abs); */
     /* RUN_TEST(test_mul_dig_by_dec_int); */
-    RUN_TEST(test_left_shift);
+    /* RUN_TEST(test_left_shift); */
+    RUN_TEST(test_right_shift);
     /* RUN_TEST(fib_test); */
 
 

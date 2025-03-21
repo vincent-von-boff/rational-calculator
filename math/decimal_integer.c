@@ -339,6 +339,7 @@ Dec_int* left_shift_dec_int(Dec_int* x, long unsigned int shift_size){
         result->sign = 1;
         return result;
     }
+
     if(shift_size==0){
         char* result_digits = (char*) malloc(x->size * sizeof(char));
         memcpy(result_digits, x->digits, x->size);
@@ -347,14 +348,46 @@ Dec_int* left_shift_dec_int(Dec_int* x, long unsigned int shift_size){
         result->sign = x->sign;
         return result;
     }
-    puts("here");
-    char* result_digits = (char*) calloc(x->size+shift_size, sizeof(char));
+
+    char* result_digits = (char*) malloc((x->size+shift_size)* sizeof(char));
     memcpy(result_digits + shift_size*sizeof(char), x->digits, x->size);
     for(long unsigned int i=0; i<shift_size;i++){
         result_digits[i] = '0';
         }
     result->digits = result_digits;
     result->size = x->size + shift_size;
+    result->sign = x->sign;
+    
+    return result;
+}
+
+Dec_int* right_shift_dec_int(Dec_int* x, long unsigned int shift_size){
+    // Divide by 10 (right shift)
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+
+    if(shift_size >= x->size){
+        char* result_digits = (char*) malloc(sizeof(char));
+        result_digits[0] = '0';
+        result->digits = result_digits;
+        result->size = 1;
+        result->sign = 1;
+        return result;
+    }
+
+    if(shift_size==0){
+        char* result_digits = (char*) malloc(x->size * sizeof(char));
+        memcpy(result_digits, x->digits, x->size);
+        result->digits = result_digits;
+        result->size = x->size;
+        result->sign = x->sign;
+        return result;
+    }
+
+    char* result_digits = (char*) malloc((x->size-shift_size)* sizeof(char));
+    memcpy(result_digits, x->digits + shift_size*sizeof(char), x->size - shift_size);
+
+    result->digits = result_digits;
+    result->size = x->size - shift_size;
     result->sign = x->sign;
     
     return result;
