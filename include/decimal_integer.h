@@ -33,6 +33,10 @@ Dec_int* mul_dig_by_dec_int(char, Dec_int*);
 
 Dec_int* mul_dec_int(Dec_int*, Dec_int*);
 
+Dec_int* left_shift_dec_int(Dec_int*, long unsigned int);
+
+Dec_int* right_shift_dec_int(Dec_int*, long unsigned int);
+
 Dec_int* div_dec_int(Dec_int*, Dec_int*);
 
 char* dec_to_str(Dec_int*);

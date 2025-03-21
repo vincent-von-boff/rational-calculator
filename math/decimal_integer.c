@@ -7,30 +7,33 @@
 int create_dec_int(Dec_int* number, char* digits){
     /************
     RETURN:  0 if success,
-             1 if empty string
+             -1 if empty string
              2 if invalid string
      * *********/
 
     int size_dig = strlen(digits);
     if (size_dig < 1){
-        return 1;
+        return -1;
     }
 
-    int result_size = size_dig;
+    long unsigned int result_size = size_dig;
     int result_sign = 1;
     char* buffer = (char*) malloc(size_dig * sizeof(char));
     int pos = 0; //position in string used for lexing
 
     if (digits[pos] == '-'){
         result_sign = -1;    
-        pos++;
+        pos = 1;
         result_size--;
     } 
+    if (result_size == 0){
+        return 2;
+    }
 
     //bool to track if initial zeroes have been cropped
     int crop_done = 0;
 
-    for(int i=pos; i< size_dig; i++){
+    for(long unsigned int i=pos; i< size_dig; i++){
         char dig = digits[i];
         if (isdigit(dig)){
             if (dig == '0' && !crop_done){
@@ -43,11 +46,23 @@ int create_dec_int(Dec_int* number, char* digits){
         else
             return 2;
     }
+    
+    if (result_size == 0){
+        char* result_digits = (char*) malloc(sizeof(char));
+        result_digits[0] = '0';
+
+        number->digits = result_digits;
+        number->size = 1;
+        number->sign = 1;
+
+        return 0;
+    }
 
     char* result_digits = (char*) malloc(result_size * sizeof(char));
     for(int i=0; i<result_size; i++){
         result_digits[i] = buffer[i];
     }
+
     number->digits = result_digits;
     number->size = result_size;
     number->sign = result_sign;
@@ -313,9 +328,17 @@ Dec_int* mul_dig_by_dec_int(char x, Dec_int* y){
     return result;
 }
 
-Dec_int* left_shift(Dec_int* x, long unsigned int shift_size){
+Dec_int* left_shift_dec_int(Dec_int* x, long unsigned int shift_size){
     // Multiply by 10 (left shift)
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    if(x->size==1 && x->digits[0]=='0'){
+        char* result_digits = (char*) malloc(sizeof(char));
+        result_digits[0] = '0';
+        result->digits = result_digits;
+        result->size = 1;
+        result->sign = 1;
+        return result;
+    }
     if(shift_size==0){
         char* result_digits = (char*) malloc(x->size * sizeof(char));
         memcpy(result_digits, x->digits, x->size);
@@ -324,8 +347,12 @@ Dec_int* left_shift(Dec_int* x, long unsigned int shift_size){
         result->sign = x->sign;
         return result;
     }
+    puts("here");
     char* result_digits = (char*) calloc(x->size+shift_size, sizeof(char));
     memcpy(result_digits + shift_size*sizeof(char), x->digits, x->size);
+    for(long unsigned int i=0; i<shift_size;i++){
+        result_digits[i] = '0';
+        }
     result->digits = result_digits;
     result->size = x->size + shift_size;
     result->sign = x->sign;
@@ -333,34 +360,34 @@ Dec_int* left_shift(Dec_int* x, long unsigned int shift_size){
     return result;
 }
 
-Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){
-    // Product of two positive integers.
-    
-    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
-    char* buffer = (char*) malloc((x->size+y->size) * sizeof(char));
-    char cache[10];
-
-    //Finds largest in number of digits
-    Dec_int* max;
-    Dec_int* min;
-    if (x->size >= y->size){
-        max = x;
-        min = y;
-    }
-    else{
-        max = y;
-        min = x;
-    }
-
-    unsigned int shift_count = 0;
-    for(unsigned int i=0; i<min->size; i++){
-
-    }
-    
-
-
-    return NULL;
-}
+/* Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){ */
+/*     // Product of two positive integers. */
+/*      */
+/*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
+/*     char* buffer = (char*) malloc((x->size+y->size) * sizeof(char)); */
+/*     char cache[10]; */
+/*  */
+/*     //Finds largest in number of digits */
+/*     Dec_int* max; */
+/*     Dec_int* min; */
+/*     if (x->size >= y->size){ */
+/*         max = x; */
+/*         min = y; */
+/*     } */
+/*     else{ */
+/*         max = y; */
+/*         min = x; */
+/*     } */
+/*  */
+/*     unsigned int shift_count = 0; */
+/*     for(unsigned int i=0; i<min->size; i++){ */
+/*  */
+/*     } */
+/*      */
+/*  */
+/*  */
+/*     return NULL; */
+/* } */
 
 Dec_int* dec_int_abs(Dec_int* x){
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));

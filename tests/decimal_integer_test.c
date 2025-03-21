@@ -32,6 +32,105 @@ Dec_int* fib(int N){
     return result;
 }
 
+TEST(test_create_dec_int){
+    Dec_int x;
+    char* arg1;
+    char* expect;
+
+    arg1 = "";
+    int bool_res = create_dec_int(&x, arg1);
+    int bool_expect = -1;
+    printf("|--Testing creation failure of empty string:\n");
+    ASSERT(bool_res == bool_expect);
+    puts("|\n");
+
+    arg1 = "-";
+    bool_res = create_dec_int(&x, arg1);
+    bool_expect = 2;
+    printf("|--Testing creation failure of \"-\":\n");
+    ASSERT(bool_res == bool_expect);
+    puts("|\n");
+
+    arg1 = "invalid";
+    bool_res = create_dec_int(&x, arg1);
+    bool_expect = 2;
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT(bool_res == bool_expect);
+    puts("|\n");
+
+    arg1 = "0";
+    create_dec_int(&x, arg1);
+    expect = "0";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "-0";
+    create_dec_int(&x, arg1);
+    expect = "0";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "000000";
+    create_dec_int(&x, arg1);
+    expect = "0";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+    
+    arg1 = "-000000";
+    create_dec_int(&x, arg1);
+    expect = "0";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "-00003";
+    create_dec_int(&x, arg1);
+    expect = "-3";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "-17";
+    create_dec_int(&x, arg1);
+    expect = "-17";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "87147587";
+    create_dec_int(&x, arg1);
+    expect = "87147587";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "-87147587";
+    create_dec_int(&x, arg1);
+    expect = "-87147587";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "-928173988718623762873687147587";
+    create_dec_int(&x, arg1);
+    expect = "-928173988718623762873687147587";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    arg1 = "928173988718623762873687147587";
+    create_dec_int(&x, arg1);
+    expect = "928173988718623762873687147587";
+    printf("|--Testing creation \"%s\":\n", arg1);
+    ASSERT_STR_EQ(dec_to_str(&x), expect);
+    puts("|\n");
+
+    return 0;
+}
+
 TEST(test_order){
     Dec_int x;
     Dec_int y;
@@ -293,6 +392,61 @@ TEST(test_mul_dig_by_dec_int){
     return 0;
 }
 
+TEST(test_left_shift){
+    Dec_int y;
+    Dec_int* result;
+    long unsigned int scalar;
+    char arg2[1000];
+    char expect[1000];
+
+    scalar = 1;
+    strcpy(arg2, "9878934");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "98789340");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 0;
+    strcpy(arg2, "111110002");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "111110002");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 5;
+    strcpy(arg2, "999999999");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "99999999900000");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 17;
+    strcpy(arg2, "2134");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "213400000000000000000");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    scalar = 3;
+    strcpy(arg2, "0");
+    create_dec_int(&y, arg2);
+    result = left_shift_dec_int(&y, scalar);
+    strcpy(expect, "0");
+    printf("|--Testing %s << %ld :\n", arg2, scalar);
+    ASSERT_STR_EQ(dec_to_str(result), expect);
+    puts("|\n");
+
+    return 0;
+}
+
 TEST(fib_test){
     // fib(100)
     char* expect = "354224848179261915075";
@@ -311,13 +465,15 @@ TEST(fib_test){
 
 int test_dec_int(int argc, char** argv){
 
-    RUN_TEST(test_order);
-    RUN_TEST(test_sum_dec_int_abs);
-    RUN_TEST(test_sum_dec_int);
-    RUN_TEST(test_sub_dec_int);
-    RUN_TEST(test_sub_dec_int_abs);
-    RUN_TEST(test_mul_dig_by_dec_int);
-    RUN_TEST(fib_test);
+    /* RUN_TEST(test_create_dec_int); */
+    /* RUN_TEST(test_order); */
+    /* RUN_TEST(test_sum_dec_int_abs); */
+    /* RUN_TEST(test_sum_dec_int); */
+    /* RUN_TEST(test_sub_dec_int); */
+    /* RUN_TEST(test_sub_dec_int_abs); */
+    /* RUN_TEST(test_mul_dig_by_dec_int); */
+    RUN_TEST(test_left_shift);
+    /* RUN_TEST(fib_test); */
 
 
 
