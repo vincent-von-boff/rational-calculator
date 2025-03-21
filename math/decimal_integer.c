@@ -393,34 +393,67 @@ Dec_int* right_shift_dec_int(Dec_int* x, long unsigned int shift_size){
     return result;
 }
 
-/* Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){ */
-/*     // Product of two positive integers. */
-/*      */
-/*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
-/*     char* buffer = (char*) malloc((x->size+y->size) * sizeof(char)); */
-/*     char cache[10]; */
-/*  */
-/*     //Finds largest in number of digits */
-/*     Dec_int* max; */
-/*     Dec_int* min; */
-/*     if (x->size >= y->size){ */
-/*         max = x; */
-/*         min = y; */
-/*     } */
-/*     else{ */
-/*         max = y; */
-/*         min = x; */
-/*     } */
-/*  */
-/*     unsigned int shift_count = 0; */
-/*     for(unsigned int i=0; i<min->size; i++){ */
-/*  */
-/*     } */
-/*      */
-/*  */
-/*  */
-/*     return NULL; */
-/* } */
+Dec_int* create_zero_dec_int(void){
+    Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
+    char* result_digits = (char*) malloc(sizeof(char));
+    result_digits[0] = '0';
+    result->digits = result_digits;
+    result->size = 1;
+    result->sign = 1;
+    return result;
+}
+
+Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){
+    // Product of two positive integers.
+
+    Dec_int* result = create_zero_dec_int();
+    Dec_int* res_buffer = (Dec_int*) malloc(sizeof(Dec_int));
+
+    if((x->size==1 && x->digits[0]=='0')||(y->size==1 && y->digits[0]=='0')){
+        char* result_digits = (char*) malloc(sizeof(char));
+        result_digits[0] = '0';
+        result->digits = result_digits;
+        result->size = 1;
+        result->sign = 1;
+        return result;
+    }
+
+
+    //Finds largest in number of digits
+    Dec_int* max;
+    Dec_int* min;
+    if (x->size >= y->size){
+        max = x;
+        min = y;
+    }
+    else{
+        max = y;
+        min = x;
+    }
+
+    long unsigned int position = 0;
+    unsigned int shift_count = 0;
+    Dec_int** cache = (Dec_int**) calloc(10, sizeof(Dec_int*));
+    Dec_int* cache_value;
+    int cache_index;
+
+    for(unsigned int i=0; i<min->size; i++){
+        cache_index = (int) min->digits[i];
+        if(!cache[cache_index]){
+            cache_value = mul_dig_by_dec_int(min->digits[i], max);
+            res_buffer = left_shift_dec_int(cache_value, i);
+            result = sum_dec_int(result, res_buffer);
+            cache[cache_index] = cache_value;
+            }
+        else{
+            res_buffer = left_shift_dec_int(cache[cache_index], i);
+            result = sum_dec_int(result, res_buffer);
+        }
+    }
+    result->sign = x->sign * y->sign;
+
+    return result;
+}
 
 Dec_int* dec_int_abs(Dec_int* x){
     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int));
