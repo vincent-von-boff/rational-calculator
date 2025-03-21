@@ -272,6 +272,14 @@ Dec_int* mul_dig_by_dec_int(char x, Dec_int* y){
         result->sign = 1;
         return result;
     }
+    if(x=='1'){
+        char* buff = (char*) malloc(y->size * sizeof(char));
+        memcpy(buff, y->digits, y->size);
+        result->digits = buff;
+        result->size = y->size;
+        result->sign = y->sign;
+        return result;
+    }
 
     char* result_digits = (char*) malloc(y->size * sizeof(char));
 
@@ -307,7 +315,6 @@ Dec_int* mul_dig_by_dec_int(char x, Dec_int* y){
 
 /* Dec_int* mul_dec_int(Dec_int* x, Dec_int* y){ */
 /*     // Product of two positive integers. */
-/*     // TO DO */
 /*      */
 /*     Dec_int* result = (Dec_int*) malloc(sizeof(Dec_int)); */
 /*  */
